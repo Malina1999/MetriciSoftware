@@ -80,11 +80,15 @@ public class MainFrame extends JFrame implements ActionListener {
         if (e.getActionCommand().equals("NEW GAME")) {
             leftPanel.newGame(rightPanel.getRow(), rightPanel.getColor());
             leftPanel.getGame().setMainFrame(this);
-        } else if (e.getActionCommand().equals("STOP GAME")) {
-            if (leftPanel.getGame() != null) {
-                leftPanel.getGame().stop();
-                leftPanel.displayHighscore(0, true);
+        } else {
+            if (e.getActionCommand().equals("STOP GAME") && leftPanel.getGame() != null) {
+                    stopAndDisplayScore();
             }
         }
+    }
+
+    private void stopAndDisplayScore(){
+        leftPanel.getGame().stop();
+        leftPanel.displayHighscore(0, true);
     }
 }

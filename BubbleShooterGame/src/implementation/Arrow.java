@@ -29,15 +29,15 @@ public class Arrow {
         }
         x = p.x - base.x;
         y = p.y - base.y;
-        double angle = Math.atan((double) (x - Constants.FIELD_SIZE_X / 2) / (Constants.FIELD_SIZE_Y - y));
-        g2d.rotate(angle, Constants.FIELD_SIZE_X / 2, Constants.FIELD_SIZE_Y);
+        double angle = Math.atan( (x - Constants.FIELD_SIZE_X / (double)2) / (Constants.FIELD_SIZE_Y - y));
+        g2d.rotate(angle, Constants.FIELD_SIZE_X / (double)2, Constants.FIELD_SIZE_Y);
         g2d.drawLine(Constants.FIELD_SIZE_X / 2, Constants.FIELD_SIZE_Y,
                 Constants.FIELD_SIZE_X / 2, Constants.FIELD_SIZE_Y - LENGTH);
         g2d.drawLine(Constants.FIELD_SIZE_X / 2, Constants.FIELD_SIZE_Y - LENGTH,
                 Constants.FIELD_SIZE_X / 2 - TIP_LENGTH, Constants.FIELD_SIZE_Y - LENGTH + TIP_LENGTH);
         g2d.drawLine(Constants.FIELD_SIZE_X / 2, Constants.FIELD_SIZE_Y - LENGTH,
                 Constants.FIELD_SIZE_X / 2 + TIP_LENGTH, Constants.FIELD_SIZE_Y - LENGTH + TIP_LENGTH);
-        g2d.rotate(-angle, Constants.FIELD_SIZE_X / 2, Constants.FIELD_SIZE_Y);
+        g2d.rotate(-angle, Constants.FIELD_SIZE_X / (double)2, Constants.FIELD_SIZE_Y);
     }
 
 

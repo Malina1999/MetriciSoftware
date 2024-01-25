@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.Objects;
 
 public class HighscoreEntry implements Serializable, Comparable<HighscoreEntry>, Comparator<HighscoreEntry>{
 	private String name;
@@ -89,7 +90,7 @@ public class HighscoreEntry implements Serializable, Comparable<HighscoreEntry>,
 	 * @param o the objectouptupstream to write to
 	 * @throws IOException
 	 */
-	public void writeObject(ObjectOutputStream o) throws IOException{
+	private void writeObject(ObjectOutputStream o) throws IOException{
 		o.writeObject(name);
 		o.writeLong(score);
 		o.writeInt(rows);
@@ -102,11 +103,11 @@ public class HighscoreEntry implements Serializable, Comparable<HighscoreEntry>,
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public void readObject(ObjectInputStream o) throws IOException, ClassNotFoundException{
+	private void readObject(ObjectInputStream o) throws IOException, ClassNotFoundException{
 		name = (String) o.readObject();
-		score = (long) o.readLong();
-		rows = (int) o.readInt();
-		color = (int) o.readInt();
+		score = o.readLong();
+		rows = o.readInt();
+		color = o.readInt();
 	}
 	
 	/**
@@ -127,5 +128,15 @@ public class HighscoreEntry implements Serializable, Comparable<HighscoreEntry>,
 		if(h1.score > h2.getScore()) return -1;
 		if(h1.score < h2.getScore()) return 1;
 		return 0;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		return super.equals(other);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash();
 	}
 }

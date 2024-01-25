@@ -1,6 +1,7 @@
 package model;
 
 import controller.MainFrame;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import implementation.Canvas;
 import implementation.MovingBubble;
 import utils.Constants;
@@ -13,12 +14,14 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Objects;
 
+
 import javax.swing.Timer;
 
 /**
  * the engine of the game
  */
-public class Game implements ActionListener {
+@SuppressFBWarnings({"EI_EXPOSE_REP2", "EI_EXPOSE_REP2"})
+public class Game implements ActionListener{
     /**
      * the container of the bubbles on the screen
      */
@@ -32,12 +35,12 @@ public class Game implements ActionListener {
     /**
      * the bubble that currently moves on the screen
      */
-    private MovingBubble moving_bubble;
+    private MovingBubble movingBubble;
 
     /**
      * number of the initial rows
      */
-    private final int initial_rows;
+    private final int initialRows;
 
     /**
      * number of the possible colors of bubbles
@@ -124,7 +127,7 @@ public class Game implements ActionListener {
     public Game(int row, int colors, Canvas c) {
         canvas = c;
         stopped = false;
-        initial_rows = row;
+        initialRows = row;
         this.colors = colors;
         shotCount = 0;
         numOfBubbles = 0;
@@ -144,7 +147,7 @@ public class Game implements ActionListener {
                                         (i / 2) * Constants.ROW_DISTANCE :
                                         (i / 2) * Constants.ROW_DISTANCE + Constants.ROW_DISTANCE / 2));
                 r.add(b);
-                if (i < initial_rows) {
+                if (i < initialRows) {
                     b.setVisible(true);
                     numOfBubbles++;
                 } else
@@ -183,8 +186,8 @@ public class Game implements ActionListener {
         for (Bubble b : upcoming) {
             b.paintBubble(g2d);
         }
-        if (moving_bubble != null)
-            moving_bubble.paintBubble(g2d);
+        if (movingBubble != null)
+            movingBubble.paintBubble(g2d);
     }
 
     /**
@@ -211,12 +214,12 @@ public class Game implements ActionListener {
      * @param panelLoc location of the panel on the screen
      */
     public void fire(Point mouseLoc, Point panelLoc) {
-        boolean movingExists = !(moving_bubble == null);
-        movingExists = (movingExists && moving_bubble.isMoving());
+        boolean movingExists = (movingBubble != null);
+        movingExists = (movingExists && movingBubble.isMoving());
         if (!movingExists) {
             Point dir = new Point(mouseLoc.x - panelLoc.x,
                     mouseLoc.y - panelLoc.y);
-            moving_bubble = new MovingBubble(upcoming.remove(), dir);
+            movingBubble = new MovingBubble(upcoming.remove(), dir);
             upcoming.add(new Bubble(Bubble.getRandomColor(colors)));
             arrangeUpcoming();
             numOfBubbles++;
@@ -231,9 +234,9 @@ public class Game implements ActionListener {
      * checks whether the moving bubble is close to a fixed one.
      * if yes, then it will be fixed in the hexile grid
      */
-    public void checkProximity() {
-        int currentPosX = moving_bubble.getCenterLocation().x;
-        int currentPosY = moving_bubble.getCenterLocation().y;
+    public void checkProximity() throws MyCustomException {
+        int currentPosX = movingBubble.getCenterLocation().x;
+        int currentPosY = movingBubble.getCenterLocation().y;
         int row = (currentPosY - Bubble.RADIUS) / (Constants.ROW_DISTANCE / 2);
         int col;
         if (row < ROW_COUNT) {
@@ -247,7 +250,7 @@ public class Game implements ActionListener {
             }
             ArrayList<Bubble> neighbours = getNeighbours(row, col);
             for (Bubble b : Objects.requireNonNull(neighbours)) {
-                if (b.isVisible() && BubbleDist(moving_bubble, b) <= 4 + (Bubble.RADIUS + 1) * 2) {
+                if (b.isVisible() && bubbleDist(movingBubble, b) <= 4 + (Bubble.RADIUS + 1) * 2) {
                     fixBubble(row, col);
                     break;
                 }
@@ -261,12 +264,12 @@ public class Game implements ActionListener {
      * @param row the row-index in the grid
      * @param col the column-index in the grid
      */
-    private void fixBubble(int row, int col) {
-        Point temp_point = bubbles.get(row).get(col).getLocation();
-        moving_bubble.setLocation(temp_point);
-        bubbles.get(row).set(col, moving_bubble);
+    private void fixBubble(int row, int col) throws MyCustomException {
+        Point tempPoint = bubbles.get(row).get(col).getLocation();
+        movingBubble.setLocation(tempPoint);
+        bubbles.get(row).set(col, movingBubble);
         timer.stop();
-        moving_bubble.setMoving(false);
+        movingBubble.setMoving(false);
         int removed = removeCoherent(row, col) + removeFloating();
         mainFrame.updateScore(score);
         numOfBubbles -= removed;
@@ -326,13 +329,14 @@ public class Game implements ActionListener {
      * @return list of the neighbouring bubbles
      */
     private ArrayList<Bubble> getNeighbours(int row, int col) {
+
         try {
 
             ArrayList<Bubble> neighbours = new ArrayList<>();
             //LEFT
             if (col > 0) neighbours.add(bubbles.get(row).get(col - 1));
             //RIGHT
-            if (col < (bubbles.get(row).isFull() ? COL_COUNT_FULL : COL_COUNT) - 1) {
+             if (col < (bubbles.get(row).isFull() ? COL_COUNT_FULL : COL_COUNT) - 1) {
                 neighbours.add(bubbles.get(row).get(col + 1));
             }
             //UPPER LEFT
@@ -377,10 +381,10 @@ public class Game implements ActionListener {
      * @param b2 second bubble
      * @return the distance of the bubbles
      */
-    public static double BubbleDist(Bubble b1, Bubble b2) {
-        double x_dist = b1.getCenterLocation().x - b2.getCenterLocation().x;
-        double y_dist = b1.getCenterLocation().y - b2.getCenterLocation().y;
-        return Math.sqrt(Math.pow(x_dist, 2) + Math.pow(y_dist, 2));
+    public static double bubbleDist(Bubble b1, Bubble b2) {
+        double xDist = b1.getCenterLocation().x - (double)b2.getCenterLocation().x;
+        double yDist = b1.getCenterLocation().y - (double)b2.getCenterLocation().y;
+        return Math.sqrt(Math.pow(xDist, 2) + Math.pow(yDist, 2));
     }
 
     /**
@@ -390,7 +394,7 @@ public class Game implements ActionListener {
      * @param col column-index of the placed bubble
      * @return the number of removed bubbles
      */
-    private int removeCoherent(int row, int col) {
+    private int removeCoherent(int row, int col) throws MyCustomException {
         unMarkAll();
         markColor(row, col);
         int ret = 0;
@@ -409,7 +413,7 @@ public class Game implements ActionListener {
      *
      * @return the number of removed bubbles
      */
-    private int removeFloating() {
+    private int removeFloating() throws MyCustomException {
         markAll();
         for (Bubble b : bubbles.get(0)) {
             if (b.isVisible()) {
@@ -447,19 +451,17 @@ public class Game implements ActionListener {
      * @param row row-index of the bubble
      * @param col column-index of the bubble
      */
-    private void markColor(int row, int col) {
+    private void markColor(int row, int col) throws MyCustomException {
 
         try {
             bubbles.get(row).get(col).mark();
             for (Bubble b : getNeighbours(row, col)) {
-                if (b.isVisible() && !b.isMarked()) {
-                    if (b.getColor().equals(bubbles.get(row).get(col).getColor())) {
+                if (b.isVisible() && !b.isMarked() && b.getColor().equals(bubbles.get(row).get(col).getColor())) {
                         markColor(b.getRow(), b.getCol());
-                    }
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException("Failed to mark color due to: " + e.getMessage());
+            throw new MyCustomException("Failed to mark color due to: " + e.getMessage());
         }
 
     }
@@ -469,7 +471,7 @@ public class Game implements ActionListener {
      *
      * @return number of the marked bubbles
      */
-    private int countMarked() {
+    private int countMarked() throws MyCustomException {
         try {
             int ret = 0;
             for (RowList r : bubbles) {
@@ -481,14 +483,14 @@ public class Game implements ActionListener {
             }
             return ret;
         } catch (Exception e) {
-            throw new RuntimeException("Failed to count marked bubble due to: " + e.getMessage());
+            throw new MyCustomException("Failed to count marked bubble due to: " + e.getMessage());
         }
     }
 
     /**
      * unmarks all bubbles
      */
-    private void unMarkAll() {
+    private void unMarkAll() throws MyCustomException {
         try {
             for (RowList r : bubbles) {
                 for (Bubble b : r) {
@@ -496,14 +498,14 @@ public class Game implements ActionListener {
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException("Failed to unmarks bubbles due to: " + e.getMessage());
+            throw new MyCustomException("Failed to unmarks bubbles due to: " + e.getMessage());
         }
     }
 
     /**
      * marks all bubbles
      */
-    private void markAll() {
+    private void markAll() throws MyCustomException {
         try {
             for (RowList r : bubbles) {
                 for (Bubble b : r) {
@@ -511,14 +513,14 @@ public class Game implements ActionListener {
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException("Failed to mark bubbles due to: " + e.getMessage());
+            throw new MyCustomException("Failed to mark bubbles due to: " + e.getMessage());
         }
     }
 
     /**
      * removes all marked bubbles
      */
-    private void removeMarked() {
+    private void removeMarked() throws MyCustomException {
         try {
             for (RowList r : bubbles) {
                 for (Bubble b : r) {
@@ -528,7 +530,7 @@ public class Game implements ActionListener {
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException("Failed to remove marked bubbles due to: " + e.getMessage());
+            throw new MyCustomException("Failed to remove marked bubbles due to: " + e.getMessage());
         }
     }
 
@@ -554,7 +556,7 @@ public class Game implements ActionListener {
      * @return inital number of rows
      */
     public int getInitialRows() {
-        return initial_rows;
+        return initialRows;
     }
 
     /**
@@ -580,8 +582,12 @@ public class Game implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent arg0) {
-        moving_bubble.move();
-        checkProximity();
+        movingBubble.move();
+        try {
+            checkProximity();
+        } catch (MyCustomException e) {
+            throw new RuntimeException(e);
+        }
         canvas.repaint();
     }
 

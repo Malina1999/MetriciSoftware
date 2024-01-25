@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.logging.Logger;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -14,7 +15,9 @@ public class Highscores extends AbstractTableModel implements Serializable{
 	/**
 	 * the object to store the entries
 	 */
-	ArrayList<HighscoreEntry> entries = new ArrayList<HighscoreEntry>();
+	ArrayList<HighscoreEntry> entries = new ArrayList<>();
+
+	private static final Logger logger = Logger.getLogger(Highscores.class.getName());
 	
 	/**
 	 * {@inheritDoc}
@@ -94,7 +97,7 @@ public class Highscores extends AbstractTableModel implements Serializable{
 	 * @param o objectoutputstream to write to
 	 * @throws IOException
 	 */
-	public void writeObject(ObjectOutputStream o) throws IOException{
+	private void writeObject(ObjectOutputStream o) throws IOException{
 		o.writeObject(entries);
 	}
 	
@@ -104,7 +107,7 @@ public class Highscores extends AbstractTableModel implements Serializable{
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public void readObject(ObjectInputStream o) throws IOException, ClassNotFoundException{
+	private void readObject(ObjectInputStream o) throws IOException, ClassNotFoundException{
 		entries = (ArrayList<HighscoreEntry>) o.readObject();
 	}
 	
@@ -114,7 +117,7 @@ public class Highscores extends AbstractTableModel implements Serializable{
 	 */
 	public void print(){
 		for (HighscoreEntry h : entries){
-			System.out.println(h.getName()+" "+h.getScore()+" "+h.getRows()+" "+h.getColor());
+			logger.info(h.getName()+" "+h.getScore()+" "+h.getRows()+" "+h.getColor());
 		}
 	}
 	

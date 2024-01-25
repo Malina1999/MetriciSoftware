@@ -1,5 +1,6 @@
 package controller;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import utils.Constants;
 
 import java.awt.BorderLayout;
@@ -17,16 +18,13 @@ import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
-
+@SuppressFBWarnings("EI_EXPOSE_REP2")
 public class SettingsPanel extends JPanel {
 
     private MainFrame mainFrame;
     private JLabel scoreLabel;
-    private JPanel lowerPanel;
     private JSpinner rowsSpinner;
     private JSpinner colorSpinner;
-    private JButton newGameButton;
-    private JButton stopGameButton;
 
     /**
      * constructor, initiates the panel and sets the parameter
@@ -45,6 +43,7 @@ public class SettingsPanel extends JPanel {
      * and the actionlisteners
      */
     public void initComponents() {
+        JPanel lowerPanel;
         scoreLabel = new JLabel("0", SwingConstants.CENTER);
         scoreLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 5, 0, Color.pink));
         scoreLabel.setPreferredSize(new Dimension(Constants.WINDOW_SIZE_X - Constants.FIELD_SIZE_X - 5, 50));
@@ -73,11 +72,13 @@ public class SettingsPanel extends JPanel {
         colorPanel.add(colorSpinner, BorderLayout.EAST);
         colorPanel.setBorder(BorderFactory.createEmptyBorder(5, 0, 10, 0));
 
+        JButton newGameButton;
         JPanel buttonPanel = new JPanel();
         newGameButton = new JButton("New Game");
         newGameButton.setActionCommand("NEW GAME");
         newGameButton.addActionListener(mainFrame);
 
+        JButton stopGameButton;
         stopGameButton = new JButton("Stop Game");
         stopGameButton.setActionCommand("STOP GAME");
         stopGameButton.addActionListener(mainFrame);

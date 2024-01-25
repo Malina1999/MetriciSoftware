@@ -1,12 +1,15 @@
 package model;
 
+import interfaces.BubbleMarkable;
+import interfaces.MatrixBubbleInterface;
 import utils.Constants;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 
-public class Bubble {
+@edu.umd.cs.findbugs.annotations.SuppressFBWarnings({"DM_NEXTINT_VIA_NEXTDOUBLE", "EI_EXPOSE_REP2", "EI_EXPOSE_REP"})
+public class Bubble implements MatrixBubbleInterface, BubbleMarkable {
     /**
      * the color of the bubble
      */
@@ -22,7 +25,7 @@ public class Bubble {
     /**
      * location of the top left corner of the bubble
      */
-    public Point loc;
+    protected Point loc;
     /**
      * used for marking the bubble (mostly to be removed)
      */
@@ -155,7 +158,7 @@ public class Bubble {
      * @return the generated color
      */
     public static Color getRandomColor(int bound) {
-        int rnd = (int) (bound <= 8 ? Math.random() * bound : Math.random() * 8);
+        int rnd = (int)(bound <= 8 ? Math.random() * bound : Math.random() * 8);
         switch (rnd) {
             case 0:
                 return Color.green;

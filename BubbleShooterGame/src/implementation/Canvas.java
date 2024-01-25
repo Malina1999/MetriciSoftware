@@ -1,5 +1,6 @@
 package implementation;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import model.Game;
 import model.HighscoreEntry;
 import model.Highscores;
@@ -18,11 +19,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -34,12 +31,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
+@SuppressFBWarnings("EI_EXPOSE_REP")
 public class Canvas extends JPanel implements
         MouseMotionListener, MouseListener, ActionListener {
 
 
-    private Arrow arrow;
-    private Game game;
+    private transient Arrow arrow;
+    private transient Game game;
     private JLayeredPane lPane;
     private JPanel highscorePanel;
     private JPanel namePanel;
@@ -48,7 +46,7 @@ public class Canvas extends JPanel implements
     private Highscores highscores;
     private JTable highscoreTable;
     private JScrollPane scrollPane;
-    private static final String fileName = "bubble_shooter_score.text";
+    private static final String FILE_NAME = "bubble_shooter_score.text";
 
     /**
      * constructor for the class. sets of the table that displayes
@@ -190,7 +188,7 @@ public class Canvas extends JPanel implements
      */
     private void saveHighscores() {
         try {
-            ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(fileName));
+            ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(FILE_NAME));
             os.writeObject(highscores);
             os.close();
         } catch (Exception e) {
@@ -204,9 +202,9 @@ public class Canvas extends JPanel implements
      */
     private void loadHighscores() {
         try {
-            File f = new File("bubble_shooter_score.text");
+            File f = new File(FILE_NAME);
             if (f.exists()) {
-                ObjectInputStream os = new ObjectInputStream(new FileInputStream(fileName));
+                ObjectInputStream os = new ObjectInputStream(new FileInputStream(FILE_NAME));
                 highscores = (Highscores) os.readObject();
                 os.close();
             }
@@ -214,6 +212,7 @@ public class Canvas extends JPanel implements
             e.printStackTrace();
         }
     }
+
 
     /**
      * {@inheritDoc}
@@ -230,8 +229,6 @@ public class Canvas extends JPanel implements
         }
         arrow.paintComponent(g2d, getLocationOnScreen());
     }
-
-    ;
 
     /**
      * {@inheritDoc}
@@ -254,33 +251,35 @@ public class Canvas extends JPanel implements
      */
     @Override
     public void mouseClicked(MouseEvent arg0) {
-        if (game != null) {
-            if (!game.isStopped()) {
+        if (game != null && !game.isStopped()) {
                 game.fire(MouseInfo.getPointerInfo().getLocation(), getLocationOnScreen());
                 repaint();
-            }
         }
 
     }
 
+
     @Override
     public void mousePressed(MouseEvent e) {
-
+        //invoked when a mouse is pressed down
     }
+
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
+        //invoked when a mouse is released after being pressed
     }
+
 
     @Override
     public void mouseEntered(MouseEvent e) {
-
+       //invoked when a mouse enters the compoonent
     }
+
 
     @Override
     public void mouseExited(MouseEvent e) {
-
+        //invoked when a mouse exists the compoonent
     }
 
     /**

@@ -5,6 +5,10 @@ package utils;
  *
  */
 public class Constants {
+
+    private Constants(){
+        //empty constructor
+    }
     public static final int WINDOW_SIZE_X = 640;
     public static final int WINDOW_SIZE_Y = 480;
     public static final int FIELD_SIZE_X = 420;

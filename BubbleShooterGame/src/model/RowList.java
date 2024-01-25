@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class RowList extends ArrayList<Bubble> {
     private boolean full;
@@ -27,6 +28,16 @@ public class RowList extends ArrayList<Bubble> {
      */
     public void setFull(){
         full=true;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return super.equals(other);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash();
     }
 
 }

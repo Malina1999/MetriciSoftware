@@ -1,18 +1,20 @@
 package implementation;
 
+import interfaces.BubbleMover;
+import interfaces.HighScoreManager;
 import model.Bubble;
 import utils.Constants;
 
 import java.awt.Point;
 
-public class MovingBubble extends Bubble {
+public class MovingBubble extends Bubble implements BubbleMover, HighScoreManager {
 
     private boolean moving;
-    private double step_x;
-    private double step_y;
-    private double loc_x;
-    private double loc_y;
-    private static double STEP = 5;
+    private double stepX;
+    private double stepY;
+    private double locX;
+    private double locY;
+    private static double fiveSTEP= 5;
 
 
     /**
@@ -26,15 +28,15 @@ public class MovingBubble extends Bubble {
     public MovingBubble(Bubble b, Point dir) {
         super(b.getColor());
         loc = new Point(b.getLocation());
-        loc_x = loc.x;
-        loc_y = loc.y;
+        locX = loc.x;
+        locY = loc.y;
         setVisible(true);
         moving = true;
-        double offset_x = dir.x - Constants.FIELD_SIZE_X / 2;
-        double offset_y = dir.y - Constants.FIELD_SIZE_Y;
-        double dist = Math.sqrt(Math.pow(offset_x, 2) + Math.pow(offset_y, 2));
-        step_x = offset_x / dist * STEP;
-        step_y = offset_y / dist * STEP;
+        double offsetX = dir.x - (double)Constants.FIELD_SIZE_X / 2;
+        double offsetY = dir.y - (double)Constants.FIELD_SIZE_Y;
+        double dist = Math.sqrt(Math.pow(offsetX, 2) + Math.pow(offsetY, 2));
+        stepX = offsetX / dist * fiveSTEP;
+        stepY = offsetY / dist * fiveSTEP;
     }
 
     /**
@@ -60,17 +62,17 @@ public class MovingBubble extends Bubble {
      * the wall if it collides woth it
      */
     public void move() {
-        if (loc_x + step_x < 0) {
-            loc_x = (int) -(loc_x + step_x);
-            step_x = -step_x;
-        } else if (loc_x + step_x > Constants.FIELD_SIZE_X - 1 - 2 * (Bubble.RADIUS + 1)) {
-            loc_x = (int) ((Constants.FIELD_SIZE_X - 1 - 2 * (Bubble.RADIUS + 1)) * 2 - (loc_x + step_x));
-            step_x = -step_x;
+        if (locX + stepX < 0) {
+            locX = (int) -(locX + stepX);
+            stepX = -stepX;
+        } else if (locX + stepX > Constants.FIELD_SIZE_X - 1 - 2 * (Bubble.RADIUS + 1)) {
+            locX = (int) ((Constants.FIELD_SIZE_X - 1 - 2 * (Bubble.RADIUS + 1)) * 2 - (locX + stepX));
+            stepX = -stepX;
         } else
-            loc_x += step_x;
-        loc_y += step_y;
-        loc.x = (int) loc_x;
-        loc.y = (int) loc_y;
+            locX += stepX;
+        locY += stepY;
+        loc.x = (int) locX;
+        loc.y = (int) locY;
     }
 
 }
